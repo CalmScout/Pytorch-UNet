@@ -6,12 +6,12 @@ import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 import torch.nn as nn
-import torch.nn.functional as F
 from torch import optim
 
 from eval import eval_net
 from unet import UNet
 from utils import get_ids, split_ids, split_train_val, get_imgs_and_masks, batch
+
 
 def train_net(net,
               epochs=5,
@@ -74,7 +74,7 @@ def train_net(net,
                 true_masks = true_masks.cuda()
 
             masks_pred = net(imgs)
-            masks_probs = F.sigmoid(masks_pred)
+            masks_probs = torch.sigmoid(masks_pred)
             masks_probs_flat = masks_probs.view(-1)
 
             true_masks_flat = true_masks.view(-1)
@@ -100,7 +100,6 @@ def train_net(net,
             print('Checkpoint {} saved !'.format(epoch + 1))
 
 
-
 def get_args():
     parser = OptionParser()
     parser.add_option('-e', '--epochs', dest='epochs', default=5, type='int',
@@ -118,6 +117,7 @@ def get_args():
 
     (options, args) = parser.parse_args()
     return options
+
 
 if __name__ == '__main__':
     args = get_args()
